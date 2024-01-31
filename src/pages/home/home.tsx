@@ -9,14 +9,10 @@ const HomePage: React.FC = () =>  {
     const [skip, setSkip] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        if(!flag) {
             getListOfProduct();
-            setFlag(true);
-        }
-    }, [flag]);
+    }, []);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
