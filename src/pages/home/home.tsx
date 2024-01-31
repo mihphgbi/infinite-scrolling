@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Products} from "../../models/Product";
-import {initialProduct} from "../../type/initProduct";
+import {initialProduct} from "../../models/Product";
 
 const HomePage: React.FC = () =>  {
 
@@ -14,10 +14,10 @@ const HomePage: React.FC = () =>  {
             getListOfProduct();
     }, []);
 
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLoading]);
+    // useEffect(() => {
+    //     window.addEventListener('scroll', handleScroll);
+    //     return () => window.removeEventListener('scroll', handleScroll);
+    // }, [isLoading]);
 
     const getListOfProduct = async () => {
         try {
@@ -36,7 +36,6 @@ const HomePage: React.FC = () =>  {
     const handleScroll = () => {
         if (Math.floor(window.innerHeight + document.documentElement.scrollTop) === Math.floor(document.documentElement.offsetHeight)) {
             const list = getListOfProduct();
-            console.log("=========",list)
         } else {
             return;
         }
