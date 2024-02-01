@@ -1,1 +1,0 @@
-export const GET_LIST_OF_PRODUCT = 'GET_LIST_OF_PRODUCT'

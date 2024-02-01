@@ -1,81 +1,70 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Products} from "../../models/Product";
-import {initialProduct} from "../../models/Product";
-
+import "../home/styles/style.scss";
 const HomePage: React.FC = () =>  {
 
     const [dataRender, setDataRender] = useState<Products[]>([]);
     const [skip, setSkip] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [totalItem, setTotalItem] = useState(0);
 
     useEffect(() => {
-            getListOfProduct();
-    }, []);
-
-    // useEffect(() => {
-    //     window.addEventListener('scroll', handleScroll);
-    //     return () => window.removeEventListener('scroll', handleScroll);
-    // }, [isLoading]);
-
-    const getListOfProduct = async () => {
-        try {
-            const res = await axios.get(`https://dummyjson.com/products?limit=20&skip=${skip}`)
-            if(res.data.products.length > 0) {
-                setDataRender(res.data.products);
-                setSkip(skip => skip + 1);
-            } else {
-                setDataRender([initialProduct]);
+        const getListOfProduct = async () => {
+            setIsLoading(true)
+            try {
+                let url = `https://dummyjson.com/products?limit=20&skip=${skip}`;
+                if (searchKeyword) {
+                    url = `https://dummyjson.com/products/search?q=${searchKeyword}&limit=20&skip=${skip}`;
+                }
+                const res = await axios.get(url)
+                if(res.data.products.length > 0) {
+                    setDataRender(prevData => [...prevData, ...res.data.products]);
+                    setTotalItem(res.data.total)
+                }
+                return res.data.products;
+            } catch (error: any) {
+                console.debug("error", error.response.data)
+            }finally {
+                setIsLoading(false);
             }
-            return res.data.products;
-        } catch (error: any) {
-            console.debug("error", error.response.data)
         }
-    }
-    const handleScroll = () => {
-        if (Math.floor(window.innerHeight + document.documentElement.scrollTop) === Math.floor(document.documentElement.offsetHeight)) {
-            const list = getListOfProduct();
-        } else {
-            return;
-        }
-    };
-    const getListProductsBySearchKeyWords = async () => {
-        setIsLoading(true);
-        try {
-            const res = await axios.get(`https://dummyjson.com/products/search?q=${searchKeyword}&limit=20&skip=${skip}`)
-            if(res.data.products.length > 0) {
-                setDataRender(res.data.products)
+        const handleScroll = () => {
+            if ((Math.ceil(window.innerHeight + document.documentElement.scrollTop) === Math.ceil(document.documentElement.offsetHeight)) ||
+                (Math.floor(window.innerHeight + document.documentElement.scrollTop) === Math.floor(document.documentElement.offsetHeight))) {
+                skip <= totalItem && setSkip(prevPage => prevPage + 20);
             } else {
-                setDataRender([initialProduct]);
+                return;
             }
-        } catch (error: any) {
-            console.debug("error", error.response.data)
-        }
-        finally {
-            setIsLoading(false);
-        }
-    }
-    useEffect(() => {
-        setTimeout(() => {
-            searchKeyword!== '' && getListProductsBySearchKeyWords();
-        },500)
-    },[searchKeyword])
+        };
+        window.addEventListener('scroll', handleScroll);
 
-    const handleChangeSearchData = (value: any) => {
+        getListOfProduct();
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [skip, searchKeyword]);
+
+    const handleChangeSearchData = async (value: any) => {
         setSearchKeyword(value.target.value);
-    }
+        setDataRender([])
+        setSkip(0); // Reset page to 1 when search query changes
+    };
     return (
         <>
             <header>
                 <h1>Infinite Scrolling</h1>
             </header>
             <div className='container'>
-                <form>
-                    <label>Search: </label>
-                    <input type='text' value={searchKeyword} onChange={(value: any) => handleChangeSearchData(value)}/>
-                </form>
-                <div className='list-of-product'>
+                <div className='search-wrapper'>
+                    <form>
+                        <label>Search: </label>
+                        <input className='search-input' type='text' value={searchKeyword} onChange={(value: any) => handleChangeSearchData(value)}/>
+                    </form>
+                </div>
+                <div className='list-of-product-wrapper'>
                     <table>
                         <thead>
                             <tr>
@@ -99,6 +88,7 @@ const HomePage: React.FC = () =>  {
                         </tbody>
                     </table>
                         {isLoading && <p>Loading...</p>}
+                        {dataRender.length === 0 && <p>No record founds</p>}
                 </div>
             </div>
             {/*<footer>This source build by Bui Minh Phuong</footer>*/}
