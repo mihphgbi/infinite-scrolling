@@ -1,5 +1,24 @@
+.label-input {
+  padding: 0 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+}
 .search-input {
   width: 400px;
-  height: 50px;
-  border-radius: 20px;
+  height: 35px;
+  border-radius: 10px;
+  border: 1px solid gray;
+  padding: 0 15px;
+  &:focus-visible {
+    border: 1px solid black;
+  }
+}
+.list-of-product-wrapper {
+  margin-top: 30px;
+  width: 100%;
+  .image-item {
+    width: 50px;
+    height: 50px;
+  }
 }
