@@ -1,6 +1,12 @@
-# Getting Started with Create React App
+# Getting Started with This App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Introduce
+- This project is a demo of Infinite Scrolling.
+- Techs: Typescript, scss, react-router, axios.
+- The search box allows English text (it may be wrong if you use Vietnamese text).
+- For API you can see at : [https://dummyjson.com/docs/products](https://dummyjson.com/docs/products)
 
 ## Available Scripts
 
